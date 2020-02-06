@@ -7,16 +7,16 @@ public class Order {
     private long clientID;
     private long mechanicID;
     private Date creationDate;
-    private Date workingFinishDate;
+    private Date completeDate;
     private double cost;
     private double status;
 
-    public Order(long orderID, long clientID, long mechanicID, Date creationDate, Date workingFinishDate, double cost, double status) {
+    public Order(long orderID, long clientID, long mechanicID, Date creationDate, Date completeDate, double cost, double status) {
         this.orderID = orderID;
         this.clientID = clientID;
         this.mechanicID = mechanicID;
         this.creationDate = creationDate;
-        this.workingFinishDate = workingFinishDate;
+        this.completeDate = completeDate;
         this.cost = cost;
         this.status = status;
     }
@@ -53,12 +53,12 @@ public class Order {
         this.creationDate = creationDate;
     }
 
-    public Date getWorkingFinishDate() {
-        return workingFinishDate;
+    public Date getCompleteDate() {
+        return completeDate;
     }
 
-    public void setWorkingFinishDate(Date workingFinishDate) {
-        this.workingFinishDate = workingFinishDate;
+    public void setCompleteDate(Date completeDate) {
+        this.completeDate = completeDate;
     }
 
     public double getCost() {
