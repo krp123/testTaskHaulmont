@@ -4,17 +4,17 @@ import java.util.Date;
 
 public class Order {
     private long orderID;
-    private long clientID;
-    private long mechanicID;
+    private String clientLastName;
+    private String mechanicLastName;
     private Date creationDate;
     private Date completeDate;
     private double cost;
-    private double status;
+    private String status;
 
-    public Order(long orderID, long clientID, long mechanicID, Date creationDate, Date completeDate, double cost, double status) {
+    public Order(long orderID, String clientLastName, String mechanicLastName, Date creationDate, Date completeDate, double cost, String status) {
         this.orderID = orderID;
-        this.clientID = clientID;
-        this.mechanicID = mechanicID;
+        this.clientLastName = clientLastName;
+        this.mechanicLastName = mechanicLastName;
         this.creationDate = creationDate;
         this.completeDate = completeDate;
         this.cost = cost;
@@ -29,20 +29,20 @@ public class Order {
         this.orderID = orderID;
     }
 
-    public long getClientID() {
-        return clientID;
+    public String getClientLastName() {
+        return clientLastName;
     }
 
-    public void setClientID(long clientID) {
-        this.clientID = clientID;
+    public void setClientLastName(String clientLastName) {
+        this.clientLastName = clientLastName;
     }
 
-    public long getMechanicID() {
-        return mechanicID;
+    public String getMechanicLastName() {
+        return mechanicLastName;
     }
 
-    public void setMechanicID(long mechanicID) {
-        this.mechanicID = mechanicID;
+    public void setMechanicLastName(String mechanicLastName) {
+        this.mechanicLastName = mechanicLastName;
     }
 
     public Date getCreationDate() {
@@ -69,11 +69,11 @@ public class Order {
         this.cost = cost;
     }
 
-    public double getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(double status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }

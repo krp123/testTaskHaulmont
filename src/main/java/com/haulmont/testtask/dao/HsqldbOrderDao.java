@@ -14,16 +14,16 @@ public class HsqldbOrderDao implements OrderDao {
     Connection connection;
 
     @Override
-    public void create(long clientID, long mechanicID, Date creationDate, Date completeDate, double cost, double status) {
-        executeQuery("INSERT INTO orders (client_id, mechanic_id, creation_date, complete_date, cost, status) VALUES" +
-                "('" + clientID + "', '" + mechanicID + "', '" + creationDate + "', '" + completeDate + "'" +
+    public void create(String clientLastName, String mechanicLastName, Date creationDate, Date completeDate, double cost, String status) {
+        executeQuery("INSERT INTO orders (client_last_name, mechanic_last_name, creation_date, complete_date, cost, status) VALUES" +
+                "('" + clientLastName + "', '" + mechanicLastName + "', '" + creationDate + "', '" + completeDate + "'" +
                 ", '" + cost + "', '" + status + "')");
     }
 
     @Override
-    public void update(long orderID, long clientID, long mechanicID, Date creationDate, Date completeDate, double cost, double status) {
-        executeQuery("UPDATE orders SET (client_id, mechanic_id, creation_date, complete_date, cost, status) = " +
-                "('" + clientID + "', '" + mechanicID + "', '" + creationDate + "', '" + completeDate + "'" +
+    public void update(long orderID, String clientLastName, String mechanicLastName, Date creationDate, Date completeDate, double cost, String status) {
+        executeQuery("UPDATE orders SET (client_last_name, mechanic_last_name, creation_date, complete_date, cost, status) = " +
+                "('" + clientLastName + "', '" + mechanicLastName + "', '" + creationDate + "', '" + completeDate + "'" +
                 ", '" + cost + "', '" + status + "') WHERE order_id = '" + orderID + "'");
     }
 
@@ -57,8 +57,9 @@ public class HsqldbOrderDao implements OrderDao {
             Statement statement = createConnectionAndStatement();
             ResultSet rs = statement.executeQuery("SELECET * FROM orders ");
             while (rs.next()) {
-                orders.add(new Order(rs.getLong(1), rs.getLong(2), rs.getLong(3),
-                        rs.getDate(4), rs.getDate(5), rs.getDouble(6), rs.getDouble(7)));
+                orders.add(new Order(rs.getLong(1), rs.getString(2), rs.getString(3),
+                        rs.getDate(4), rs.getDate(5), rs.getDouble(6),
+                        rs.getString(7)));
             }
             closeConnectionAndStatement(statement);
         } catch (SQLException e) {
@@ -68,11 +69,11 @@ public class HsqldbOrderDao implements OrderDao {
         }
     }
 
-    public long getId(String clientID) {
+    public long getId(String client_last_name) {
         long res = 0;
         try {
             Statement statement = createConnectionAndStatement();
-            ResultSet rs = statement.executeQuery("SELECT order_id FROM orders WHERE client_id = '" + clientID + "'");
+            ResultSet rs = statement.executeQuery("SELECT order_id FROM orders WHERE client_last_name = '" + client_last_name + "'");
             if (rs.next())
                 rs.getLong(1);
             closeConnectionAndStatement(statement);

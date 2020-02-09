@@ -1,7 +1,11 @@
 package com.haulmont.testtask.ui;
 
+import com.haulmont.testtask.classes.Client;
+import com.haulmont.testtask.classes.Mechanic;
 import com.haulmont.testtask.classes.Order;
+import com.haulmont.testtask.dao.ClientDao;
 import com.haulmont.testtask.dao.DAOFactory;
+import com.haulmont.testtask.dao.MechanicDao;
 import com.haulmont.testtask.dao.OrderDao;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Item;
@@ -9,6 +13,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -57,6 +63,12 @@ public class MainUI extends UI {
         OrderDao orderDao = daoFactory.getOrderDao();
         List<Order> ordersList = orderDao.getAll();
 
+        MechanicDao mechanicDao = daoFactory.getMechanicDao();
+        List<Mechanic> mechanicList = mechanicDao.getAll();
+
+        ClientDao clientDao = daoFactory.getClientDao();
+        List<Client> clientList = clientDao.getAll();
+
         //заполнение таблицы
         int itemIndex = 1;
         for (Order order : ordersList) {
@@ -64,8 +76,8 @@ public class MainUI extends UI {
             Button buttonDelete = new Button("Удалить");
             ordersTable.addItem(new Object[]{
                     order.getOrderID(),
-                    order.getClientID(),
-                    order.getMechanicID(),
+                    order.getClientLastName(),
+                    order.getMechanicLastName(),
                     order.getCreationDate(),
                     order.getCompleteDate(),
                     order.getCost(),
@@ -108,16 +120,57 @@ public class MainUI extends UI {
                     FormLayout subContent = (FormLayout) subWindow.getContent();
                     Item item = ordersTable.getItem(index);
 
-                    //Для полей механик и клиент добавить выпадающие списки. Дата создания и заверщения - даты
+                    //Для полей механик и клиент добавить выпадающие списки. Дата создания и завершения - даты
                     //Цена - числовое поле. Статус - перечисление.
 
+                    NativeSelect mechanicSelect = new NativeSelect("Механик");
+                    List<String> mechanicListString = null;
+                    for (Mechanic mechanic : mechanicList) {
+                        mechanicListString.add(mechanic.getLastName());
+                    }
+                    mechanicSelect.addItems(mechanicListString);
+                    mechanicSelect.setValue(item.getItemProperty("mechanicLastName"));
+                    mechanicSelect.setNullSelectionAllowed(false);
+
+                    NativeSelect clientSelect = new NativeSelect("Клиент");
+                    List<String> clientListString = null;
+                    for (Client client : clientList) {
+                        clientListString.add(client.getLastName());
+                    }
+                    clientSelect.addItems(mechanicListString);
+                    clientSelect.setValue(item.getItemProperty("clientLastName"));
+                    clientSelect.setNullSelectionAllowed(false);
+
+                    DateField creationDate = createDateField(item, "Дата создания", "creationDate");
+
+                    DateField completeDate = createDateField(item, "Дата завершения", "completeDate");
+
+                    TextField cost = new TextField("Стоимость");
+                    cost.setValue(item.getItemProperty("cost").getValue().toString());
+
+                    NativeSelect status = new NativeSelect("Статус");
+                    status.setValue(item.getItemProperty("status").getValue().toString());
+
+                    subContent.addComponents(mechanicSelect, clientSelect, creationDate, completeDate, cost, status);
                 }
             });
-
-
         }
 
         return panelContent;
+    }
+
+    private static DateField createDateField(Item item, String dateFieldName, String dateFieldDAOName) {
+        DateField dateField = new DateField(dateFieldDAOName);
+        dateField.setDateFormat("dd.mm.yyyy");
+        String creationDateString = item.getItemProperty(dateFieldName).getValue().toString();
+        Date dateData = null;
+        try {
+            dateData = parseDate(creationDateString, "dd.mm.yyyy");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        dateField.setValue(dateData);
+        return dateField;
     }
 
     public static Window createModalWindow(String title) {
@@ -143,5 +196,10 @@ public class MainUI extends UI {
             }
         });
         return close;
+    }
+
+    private static Date parseDate(String date, String format) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.parse(date);
     }
 }
