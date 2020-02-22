@@ -200,6 +200,14 @@ public class MainUI extends UI {
             });
         }
 
+        //установка размера таблицы
+        if (ordersTable.size() >= 16)
+            ordersTable.setPageLength(16);
+        else
+            ordersTable.setPageLength(ordersTable.size());
+        ordersTable.setVisibleColumns("creationDate", "completeDate", "cost", "status", "create", "edit", "delete");
+        panelContent.addComponent(ordersTable);
+
         return panelContent;
     }
 
