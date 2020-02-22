@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface OrderDao {
     public void create(String clientLastName, String mechanicLastName, Date creationDate, Date completeDate,
-                       double cost, String status);
+                       String cost, String status);
 
     public void update(long orderID, String clientLastName, String mechanicLastName, Date creationDate, Date completeDate,
-                       double cost, String status);
+                       String cost, String status);
 
     public void delete(long orderID);
 

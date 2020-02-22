@@ -3,12 +3,14 @@ package com.haulmont.testtask.ui;
 import com.haulmont.testtask.classes.Client;
 import com.haulmont.testtask.classes.Mechanic;
 import com.haulmont.testtask.classes.Order;
+import com.haulmont.testtask.classes.Validator;
 import com.haulmont.testtask.dao.ClientDao;
 import com.haulmont.testtask.dao.DAOFactory;
 import com.haulmont.testtask.dao.MechanicDao;
 import com.haulmont.testtask.dao.OrderDao;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Item;
+import com.vaadin.server.UserError;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -158,9 +160,42 @@ public class MainUI extends UI {
                         @Override
                         public void buttonClick(Button.ClickEvent clickEvent) {
                             //Валидация введенных данных
+                            UserError stringError = new UserError("Поле должно содержать только буквы");
+                            UserError dateError = new UserError("Неверный формат даты");
+                            UserError priceError = new UserError("Неверный числовой формат");
+                            boolean haveError = false;
 
+                            if (!Validator.dateValidator(creationDate.getValue().toString())) {
+                                creationDate.setComponentError(dateError);
+                                haveError = true;
+                            } else
+                                creationDate.setComponentError(null);
+
+                            if (!Validator.dateValidator(completeDate.getValue().toString())) {
+                                completeDate.setComponentError(dateError);
+                                haveError = true;
+                            } else
+                                completeDate.setComponentError(null);
+
+                            if (!Validator.priceValidator(cost.getValue())) {
+                                cost.setComponentError(priceError);
+                                haveError = true;
+                            } else
+                                cost.setComponentError(null);
+
+                            //записываем данные
+                            if (!haveError) {
+                                long orderId = Long.parseLong(item.getItemProperty("id").getValue().toString());
+                                orderDao.update(orderId, clientSelect.getValue().toString(),
+                                        mechanicSelect.getValue().toString(), creationDate.getValue(),
+                                        completeDate.getValue(), cost.getValue(),
+                                        status.getValue().toString());
+                            }
                         }
                     });
+                    subContent.addComponent(buttonOk);
+                    subContent.addComponent(createCloseButton(subWindow));
+                    addWindow(subWindow);
                 }
             });
         }

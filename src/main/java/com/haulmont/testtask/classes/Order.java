@@ -8,10 +8,10 @@ public class Order {
     private String mechanicLastName;
     private Date creationDate;
     private Date completeDate;
-    private double cost;
+    private String cost;
     private String status;
 
-    public Order(long orderID, String clientLastName, String mechanicLastName, Date creationDate, Date completeDate, double cost, String status) {
+    public Order(long orderID, String clientLastName, String mechanicLastName, Date creationDate, Date completeDate, String cost, String status) {
         this.orderID = orderID;
         this.clientLastName = clientLastName;
         this.mechanicLastName = mechanicLastName;
@@ -61,11 +61,11 @@ public class Order {
         this.completeDate = completeDate;
     }
 
-    public double getCost() {
+    public String getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(String cost) {
         this.cost = cost;
     }
 
