@@ -120,8 +120,7 @@ public class MainUI extends UI {
                     FormLayout subContent = (FormLayout) subWindow.getContent();
                     Item item = ordersTable.getItem(index);
 
-                    //Для полей механик и клиент добавить выпадающие списки. Дата создания и завершения - даты
-                    //Цена - числовое поле. Статус - перечисление.
+                    //Добавляем поля в экран изменения
 
                     NativeSelect mechanicSelect = new NativeSelect("Механик");
                     List<String> mechanicListString = null;
@@ -152,6 +151,16 @@ public class MainUI extends UI {
                     status.setValue(item.getItemProperty("status").getValue().toString());
 
                     subContent.addComponents(mechanicSelect, clientSelect, creationDate, completeDate, cost, status);
+
+                    //обработчик кнопки Ок
+                    Button buttonOk = new Button("Ок");
+                    buttonOk.addClickListener(new Button.ClickListener() {
+                        @Override
+                        public void buttonClick(Button.ClickEvent clickEvent) {
+                            //Валидация введенных данных
+
+                        }
+                    });
                 }
             });
         }
