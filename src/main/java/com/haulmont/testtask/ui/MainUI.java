@@ -31,12 +31,12 @@ public class MainUI extends UI {
         TabSheet tabsheet = new TabSheet();
         tabsheet.setSizeUndefined();
         tabsheet.addTab(orders(request), "Список заказов");
-
+        layout.addComponent(tabsheet);
 
         layout.addComponent(new Label("Main UI"));
     }
 
-    public VerticalLayout  orders(VaadinRequest request) {
+    public VerticalLayout orders(VaadinRequest request) {
         VerticalLayout panelContent = new VerticalLayout();
         panelContent.setSizeFull();
 
@@ -160,7 +160,6 @@ public class MainUI extends UI {
                         @Override
                         public void buttonClick(Button.ClickEvent clickEvent) {
                             //Валидация введенных данных
-                            UserError stringError = new UserError("Поле должно содержать только буквы");
                             UserError dateError = new UserError("Неверный формат даты");
                             UserError priceError = new UserError("Неверный числовой формат");
                             boolean haveError = false;
@@ -208,6 +207,78 @@ public class MainUI extends UI {
         ordersTable.setVisibleColumns("creationDate", "completeDate", "cost", "status", "create", "edit", "delete");
         panelContent.addComponent(ordersTable);
 
+        //Добавление нового заказа
+        Button buttonAdd = new Button("Добавить");
+        buttonAdd.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                Window subWindow = new Window("Добавить заказ");
+                FormLayout subContent = (FormLayout) subWindow.getContent();
+
+                NativeSelect mechanicSelect = new NativeSelect("Механик");
+                List<String> mechanicListString = null;
+                for (Mechanic mechanic : mechanicList) {
+                    mechanicListString.add(mechanic.getLastName());
+                }
+                mechanicSelect.addItems(mechanicListString);
+
+                NativeSelect clientSelect = new NativeSelect("Клиент");
+                List<String> clientListString = null;
+                for (Client client : clientList) {
+                    clientListString.add(client.getLastName());
+                }
+                clientSelect.addItems(mechanicListString);
+
+                DateField creationDate = new DateField("Дата создания");
+                DateField completeDate = new DateField("Дата завершения");
+
+                TextField cost = new TextField("Стоимость");
+
+                NativeSelect status = new NativeSelect("Статус");
+
+                Button buttonOk = new Button("Ок");
+                buttonOk.addClickListener(new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent clickEvent) {
+                        //Валидация введенных данных
+                        UserError dateError = new UserError("Неверный формат даты");
+                        UserError priceError = new UserError("Неверный числовой формат");
+                        boolean haveError = false;
+
+                        if (!Validator.dateValidator(creationDate.getValue().toString())) {
+                            creationDate.setComponentError(dateError);
+                            haveError = true;
+                        } else
+                            creationDate.setComponentError(null);
+
+                        if (!Validator.dateValidator(completeDate.getValue().toString())) {
+                            completeDate.setComponentError(dateError);
+                            haveError = true;
+                        } else
+                            completeDate.setComponentError(null);
+
+                        if (!Validator.priceValidator(cost.getValue())) {
+                            cost.setComponentError(priceError);
+                            haveError = true;
+                        } else
+                            cost.setComponentError(null);
+
+                        //записываем данные
+                        if (!haveError) {
+                            orderDao.create(clientSelect.getValue().toString(), mechanicSelect.getValue().toString(),
+                                    creationDate.getValue(), completeDate.getValue(), cost.getValue(),
+                                    status.getValue().toString());
+                            subWindow.close();
+                        }
+                        init(request);
+                    }
+                });
+                subContent.addComponent(buttonOk);
+                subContent.addComponent(createCloseButton(subWindow));
+                addWindow(subWindow);
+            }
+        });
+        panelContent.addComponent(buttonAdd);
         return panelContent;
     }
 

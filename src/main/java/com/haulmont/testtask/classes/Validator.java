@@ -43,12 +43,12 @@ public class Validator {
 
     public static boolean dateValidator(String date) {
         boolean ok = false;
-        String[] str = date.split("-");
+        String[] str = date.split(".");
         if (str.length == 3) {
             try {
-                int year = Integer.parseInt(str[0]);
+                int year = Integer.parseInt(str[2]);
                 int month = Integer.parseInt(str[1]);
-                int day = Integer.parseInt(str[2]);
+                int day = Integer.parseInt(str[0]);
                 if ((year >= 1920) && (year <= 2020)) {
                     if ((month >= 1) && (month <= 12)) {
                         int numDays = 0;
